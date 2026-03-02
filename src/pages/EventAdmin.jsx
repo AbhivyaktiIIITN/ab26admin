@@ -184,7 +184,7 @@ const EventAdmin = () => {
             cell: info => (
                 <div className="flex gap-2">
                     <button
-                        onClick={() => navigate(`/events/${info.row.original.id}`)}
+                        onClick={() => navigate(`admin/events/${info.row.original.id}`)}
                         className="bg-teal-600 text-white px-3 py-1.5 rounded hover:bg-teal-700 transition shadow-sm text-sm"
                     >
                         Manage
