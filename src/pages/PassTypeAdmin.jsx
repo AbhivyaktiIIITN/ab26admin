@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  useReactTable, 
-  getCoreRowModel, 
+import {
+  useReactTable,
+  getCoreRowModel,
   getFilteredRowModel,
-  flexRender 
+  flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- SUB-COMPONENT: ADD PASS MODAL ---
 const AddPassModal = ({ onClose, onSuccess }) => {
@@ -34,30 +34,30 @@ const AddPassModal = ({ onClose, onSuccess }) => {
       <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-2xl">
         <h2 className="text-xl font-bold mb-6 text-gray-800">Add New Pass Type</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input 
-            placeholder="Pass Name (e.g. Gold)" 
+          <input
+            placeholder="Pass Name (e.g. Gold)"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, name: e.target.value})}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             required
           />
-          <input 
-            type="number" 
-            placeholder="Price (₹)" 
+          <input
+            type="number"
+            placeholder="Price (₹)"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, price: e.target.value})}
+            onChange={e => setFormData({ ...formData, price: e.target.value })}
             required
           />
-          <input 
-            type="number" 
-            placeholder="Total Inventory" 
+          <input
+            type="number"
+            placeholder="Total Inventory"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, count: e.target.value})}
+            onChange={e => setFormData({ ...formData, count: e.target.value })}
             required
           />
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={onClose} className="px-5 py-2 bg-gray-100 rounded-lg text-gray-600">Cancel</button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
@@ -136,8 +136,8 @@ const EditPassModal = ({ pass, onClose, onSuccess }) => {
           </div>
           <div className="flex justify-end gap-3 mt-8">
             <button type="button" onClick={onClose} className="px-5 py-2 bg-gray-100 rounded-lg text-gray-600">Cancel</button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
@@ -177,22 +177,22 @@ const PassTypeAdmin = () => {
     { header: 'ID', accessorKey: 'id' },
     { header: 'Pass Name', accessorKey: 'name' },
     { header: 'Price (₹)', accessorKey: 'price' },
-    { 
-      header: 'Inventory (Sold/Total)', 
+    {
+      header: 'Inventory (Sold/Total)',
       cell: info => (
         <div className="flex items-center gap-2">
-           <span className="font-medium text-gray-900">{info.row.original.countPurchased}</span>
-           <span className="text-gray-400">/</span>
-           <span className="text-gray-600">{info.row.original.count}</span>
+          <span className="font-medium text-gray-900">{info.row.original.countPurchased}</span>
+          <span className="text-gray-400">/</span>
+          <span className="text-gray-600">{info.row.original.count}</span>
         </div>
       )
     },
     {
       header: 'Actions',
       cell: info => (
-        <button 
+        <button
           onClick={() => setEditingPass(info.row.original)}
-          className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition shadow-sm font-medium text-sm"
+          className="bg-yellow-600 text-white px-4 py-1.5 rounded-lg hover:bg-yellow-700 transition shadow-sm font-medium text-sm"
         >
           Edit
         </button>
@@ -211,7 +211,7 @@ const PassTypeAdmin = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[400px]">
-      <div className="animate-pulse text-lg font-semibold text-indigo-600">Loading inventory details...</div>
+      <div className="animate-pulse text-lg font-semibold text-yellow-600">Loading inventory details...</div>
     </div>
   );
 
@@ -231,12 +231,12 @@ const PassTypeAdmin = () => {
               value={globalFilter ?? ''}
               onChange={e => setGlobalFilter(e.target.value)}
               placeholder="Search by name or ID..."
-              className="w-full pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition shadow-sm"
+              className="w-full pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition shadow-sm"
             />
             <span className="absolute right-3 top-3 text-gray-400 pointer-events-none">🔍</span>
           </div>
 
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="bg-green-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-green-700 transition shadow-lg active:transform active:scale-95 whitespace-nowrap"
           >
@@ -245,7 +245,7 @@ const PassTypeAdmin = () => {
         </div>
       </div>
 
-      
+
 
       {/* Table Section */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
@@ -264,7 +264,7 @@ const PassTypeAdmin = () => {
           <tbody className="divide-y divide-gray-100">
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="hover:bg-indigo-50/30 transition-colors group">
+                <tr key={row.id} className="hover:bg-yellow-50/30 transition-colors group">
                   {row.getVisibleCells().map(cell => (
                     <td key={cell.id} className="p-4 text-gray-700 text-sm">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -285,8 +285,8 @@ const PassTypeAdmin = () => {
 
       {/* Modals */}
       {showAddModal && (
-        <AddPassModal 
-          onClose={() => setShowAddModal(false)} 
+        <AddPassModal
+          onClose={() => setShowAddModal(false)}
           onSuccess={() => {
             setShowAddModal(false);
             fetchPasses();
@@ -295,9 +295,9 @@ const PassTypeAdmin = () => {
       )}
 
       {editingPass && (
-        <EditPassModal 
-          pass={editingPass} 
-          onClose={() => setEditingPass(null)} 
+        <EditPassModal
+          pass={editingPass}
+          onClose={() => setEditingPass(null)}
           onSuccess={() => {
             setEditingPass(null);
             fetchPasses();

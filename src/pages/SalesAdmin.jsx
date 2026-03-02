@@ -5,7 +5,7 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- GENERIC READ-ONLY TABLE ---
 const ReadOnlyTable = ({ data, columns, loading, emptyMessage }) => {

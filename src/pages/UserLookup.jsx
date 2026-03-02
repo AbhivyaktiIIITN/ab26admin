@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../../api/api';
+import api from '../api/api';
 
 const UserLookup = () => {
     const [abid, setAbid] = useState('');
@@ -13,119 +13,145 @@ const UserLookup = () => {
         setResult(null);
         setLoading(true);
 
-        const cleanAbid = abid.trim().toUpperCase();
-        // Extract numeric part if user types 'AB260042' -> '42'
-        // Or if they type just '42', use it.
-        // Assuming backend search might need numeric serialId or handling string.
-        // Let's assume we filter frontend-side for now or use the existing GetAllUsers logic if no dedicated endpoint exists, 
-        // OR better: Create a focused search if the list is huge. 
-        // Given current setup, fetching all users locally filter is feasible for <10k users, but let's do it efficiently.
-        // ACTUALLY: We have `getAllUsers`. Let's use that and filter locally for now to avoid backend changes if not strictly needed, 
-        // BUT for a "Lookup" tool, a specific backend endpoint is better.
-        // LET'S TRY local filtering first since we might already have the data in cache or it's fast enough.
-        // WAIT, `api.get('/users')` returns everything. This is fine for now.
+        const input = abid.trim().toUpperCase();
+
+        // Extract numeric part robustly: strip 'AB', 'AB26', 'AB00', etc.
+        // This handles cases like 'AB0042', 'AB260042', or just '42'
+        const numericPart = input.replace(/[^0-9]/g, '');
+        const targetSerial = parseInt(numericPart, 10);
+
+        if (isNaN(targetSerial)) {
+            setError("Invalid format. Please enter a numerical ID or ABID.");
+            setLoading(false);
+            return;
+        }
 
         try {
             const res = await api.get('/users');
             const users = res.data.users;
-
-            // Logic to match ABID
-            // Format: AB26 + 4 digit serial (padded)
-            // e.g. Serial 1 -> AB260001
-
-            let targetSerial = null;
-            if (cleanAbid.startsWith('AB26')) {
-                targetSerial = parseInt(cleanAbid.replace('AB26', ''));
-            } else {
-                targetSerial = parseInt(cleanAbid);
-            }
-
-            if (isNaN(targetSerial)) {
-                setError("Invalid ABID format. Enter 'AB26XXXX' or just the number.");
-                setLoading(false);
-                return;
-            }
 
             const foundUser = users.find(u => u.serialId === targetSerial);
 
             if (foundUser) {
                 setResult(foundUser);
             } else {
-                setError("User not found with this ABID.");
+                setError(`No user found with Serial ID: ${targetSerial}`);
             }
 
         } catch (err) {
             console.error("Lookup failed:", err);
-            setError("Failed to fetch user data.");
+            setError("Failed to connect to server. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="p-6 max-w-2xl mx-auto">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-6">User Lookup</h2>
+        <div className="max-w-4xl mx-auto space-y-8">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-3xl font-bold text-gray-900 tracking-tight">User Finder</h2>
+                <p className="text-gray-500 font-medium">Quickly locate participants using their ABID or Serial Number.</p>
+            </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border mb-8">
-                <form onSubmit={handleLookup} className="flex gap-4">
-                    <input
-                        type="text"
-                        value={abid}
-                        onChange={(e) => setAbid(e.target.value)}
-                        placeholder="Enter ABID (e.g. AB260042) or Number"
-                        className="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-lg"
-                        autoFocus
-                    />
+            {/* Search Bar */}
+            <div className="bg-white p-2 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 flex items-center gap-2">
+                <form onSubmit={handleLookup} className="flex-1 flex gap-2">
+                    <div className="relative flex-1">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <span className="text-gray-400 font-bold text-sm tracking-widest">ABID</span>
+                        </div>
+                        <input
+                            type="text"
+                            value={abid}
+                            onChange={(e) => setAbid(e.target.value)}
+                            placeholder="e.g. AB0042 or 42"
+                            className="w-full pl-16 pr-4 py-4 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-yellow-500 outline-none font-mono text-lg font-bold text-gray-800 transition-all"
+                            autoFocus
+                        />
+                    </div>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
+                        className="bg-yellow-500 text-black px-8 py-4 rounded-xl font-bold hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-500/20 disabled:opacity-50 flex items-center gap-2"
                     >
-                        {loading ? 'Searching...' : 'Lookup'}
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                        ) : (
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        )}
+                        <span>{loading ? 'Searching...' : 'Find User'}</span>
                     </button>
                 </form>
             </div>
 
             {error && (
-                <div className="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200">
-                    {error}
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                    <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-red-700 font-medium">{error}</span>
                 </div>
             )}
 
             {result && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
-                    <h3 className="text-xl font-bold text-green-900 mb-4">User Found!</h3>
+                <div className="bg-white border border-gray-100 border-l-4 border-l-yellow-500 rounded-2xl shadow-lg shadow-gray-200/40 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+                        <div>
+                            <h3 className="text-2xl font-bold text-gray-900 tracking-tight">{result.name}</h3>
+                            <p className="text-[10px] text-yellow-600 font-bold uppercase tracking-widest">Verified Participant</p>
+                        </div>
+                        <div className="px-4 py-2 bg-yellow-50 border border-yellow-100 rounded-xl text-sm font-mono font-bold text-yellow-700 shadow-sm">
+                            AB{String(result.serialId).padStart(5, '0')}
+                        </div>
+                    </div>
 
-                    <div className="grid gap-4">
-                        <div className="bg-white p-4 rounded border">
-                            <label className="block text-xs font-bold text-gray-500 uppercase mb-1">User ID (System)</label>
-                            <div className="flex justify-between items-center">
-                                <code className="text-lg font-mono font-bold text-gray-800">{result.id}</code>
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(result.id)}
-                                    className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded text-gray-600"
-                                >
-                                    Copy
-                                </button>
+                    <div className="p-8 grid grid-cols-1 sm:grid-cols-2 gap-8 text-sm">
+                        <div className="space-y-6">
+                            <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100/50">
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-2">Contact Details</label>
+                                <div className="space-y-1">
+                                    <p className="text-gray-900 font-medium truncate">{result.email}</p>
+                                    <p className="text-gray-600 font-medium">{result.phoneNumber || 'No phone provided'}</p>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100/50">
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-2">Institutional Info</label>
+                                <p className="text-gray-900 font-medium">{result.collegeName || 'Not Specified'}</p>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase">Name</label>
-                                <p className="text-lg font-semibold">{result.name}</p>
+                        <div className="space-y-6">
+                            <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100/50">
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-2">Activity Tracking</label>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-500">Pass Status</span>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter ${result.purchasedPasses?.length > 0 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"}`}>
+                                            {result.purchasedPasses?.length > 0 ? "Active" : "None"}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-500">Registrations</span>
+                                        <span className="font-bold text-gray-900 text-base">{result.registrations?.length || 0}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase">ABID</label>
-                                <p className="text-lg font-mono">AB26{String(result.serialId).padStart(4, '0')}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase">Email</label>
-                                <p className="text-gray-700">{result.email}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase">Phone</label>
-                                <p className="text-gray-700">{result.phoneNumber || 'N/A'}</p>
+                            <div className="px-4 py-3">
+                                <label className="block text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-2">System Identifier</label>
+                                <div className="flex items-center gap-2 group">
+                                    <code className="text-[11px] font-mono text-gray-400 truncate flex-1">{result.id}</code>
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(result.id)}
+                                        className="p-1.5 text-gray-300 hover:text-yellow-600 hover:bg-yellow-50 rounded-md transition-all"
+                                        title="Copy UID"
+                                    >
+                                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -136,3 +162,4 @@ const UserLookup = () => {
 };
 
 export default UserLookup;
+

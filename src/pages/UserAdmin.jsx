@@ -5,7 +5,7 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- SUB-COMPONENT: USER DETAILS MODAL ---
 const UserDetailsModal = ({ user, onClose }) => {
@@ -91,12 +91,12 @@ const UserDetailsModal = ({ user, onClose }) => {
                     {/* SECTION: TEAMS */}
                     {(user.teamsLeading?.length > 0 || user.teamsMember?.length > 0) && (
                         <div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-2 border-l-4 border-indigo-500 pl-2">Teams</h3>
+                            <h3 className="text-lg font-bold text-gray-800 mb-2 border-l-4 border-yellow-500 pl-2">Teams</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {user.teamsLeading?.map(t => (
-                                    <div key={t.id} className="bg-indigo-50 border border-indigo-100 p-3 rounded-lg">
-                                        <div className="font-bold text-indigo-800">{t.name} <span className="text-xs bg-indigo-200 px-1 rounded text-indigo-800 ml-2">LEADER</span></div>
-                                        <div className="text-xs text-indigo-600">Code: {t.teamcode}</div>
+                                    <div key={t.id} className="bg-yellow-50 border border-yellow-100 p-3 rounded-lg">
+                                        <div className="font-bold text-yellow-800">{t.name} <span className="text-xs bg-yellow-200 px-1 rounded text-yellow-800 ml-2">LEADER</span></div>
+                                        <div className="text-xs text-yellow-600">Code: {t.teamcode}</div>
                                     </div>
                                 ))}
                                 {user.teamsMember?.map(tm => (
@@ -159,7 +159,7 @@ const UserAdmin = () => {
     const columns = [
         {
             header: 'ABID',
-            accessorFn: row => `AB26${String(row.serialId).padStart(4, '0')}`,
+            accessorFn: row => `AB${String(row.serialId).padStart(5, '0')}`,
             cell: info => <span className="font-mono font-bold text-gray-700">{info.getValue()}</span>
         },
         {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  useReactTable, 
-  getCoreRowModel, 
+import {
+  useReactTable,
+  getCoreRowModel,
   getFilteredRowModel,
-  flexRender 
+  flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- SUB-COMPONENT: ADD ACCOMMODATION MODAL ---
 const AddAccModal = ({ onClose, onSuccess }) => {
@@ -34,30 +34,30 @@ const AddAccModal = ({ onClose, onSuccess }) => {
       <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-2xl">
         <h2 className="text-xl font-bold mb-6 text-gray-800">Add Accommodation Type</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input 
-            placeholder="Name (e.g. Elite Room)" 
+          <input
+            placeholder="Name (e.g. Elite Room)"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, name: e.target.value})}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
             required
           />
-          <input 
-            type="number" 
-            placeholder="Price (₹)" 
+          <input
+            type="number"
+            placeholder="Price (₹)"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, price: e.target.value})}
+            onChange={e => setFormData({ ...formData, price: e.target.value })}
             required
           />
-          <input 
-            type="number" 
-            placeholder="Total Capacity (Beds)" 
+          <input
+            type="number"
+            placeholder="Total Capacity (Beds)"
             className="w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-green-500"
-            onChange={e => setFormData({...formData, count: e.target.value})}
+            onChange={e => setFormData({ ...formData, count: e.target.value })}
             required
           />
           <div className="flex justify-end gap-3 pt-4">
             <button type="button" onClick={onClose} className="px-5 py-2 bg-gray-100 rounded-lg text-gray-600">Cancel</button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
               className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
@@ -105,31 +105,31 @@ const EditAccModal = ({ acc, onClose, onSuccess }) => {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
           <input
             type="number"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
             value={formData.price}
             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
             required
           />
           <input
             type="number"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none"
             value={formData.count}
             onChange={(e) => setFormData({ ...formData, count: e.target.value })}
             required
           />
           <div className="flex justify-end gap-3 mt-8">
             <button type="button" onClick={onClose} className="px-5 py-2 bg-gray-100 rounded-lg text-gray-600">Cancel</button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+              className="px-5 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50"
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
@@ -167,8 +167,8 @@ const AccommodationTypeAdmin = () => {
     { header: 'ID', accessorKey: 'id' },
     { header: 'Type Name', accessorKey: 'name' },
     { header: 'Price (₹)', accessorKey: 'price' },
-    { 
-      header: 'Occupancy (Booked / Total)', 
+    {
+      header: 'Occupancy (Booked / Total)',
       cell: info => {
         // Matching your exact backend keys
         const booked = info.row.original.countBooked || 0;
@@ -190,9 +190,9 @@ const AccommodationTypeAdmin = () => {
     {
       header: 'Actions',
       cell: info => (
-        <button 
+        <button
           onClick={() => setEditingAcc(info.row.original)}
-          className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition shadow-sm font-medium text-sm"
+          className="bg-yellow-600 text-white px-4 py-1.5 rounded-lg hover:bg-yellow-700 transition shadow-sm font-medium text-sm"
         >
           Edit
         </button>
@@ -211,7 +211,7 @@ const AccommodationTypeAdmin = () => {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[400px]">
-      <div className="animate-pulse text-lg font-semibold text-indigo-600">Syncing Accommodation Inventory...</div>
+      <div className="animate-pulse text-lg font-semibold text-yellow-600">Syncing Accommodation Inventory...</div>
     </div>
   );
 
@@ -229,12 +229,12 @@ const AccommodationTypeAdmin = () => {
               value={globalFilter ?? ''}
               onChange={e => setGlobalFilter(e.target.value)}
               placeholder="Search rooms..."
-              className="w-full pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm"
+              className="w-full pl-4 pr-10 py-2.5 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-yellow-500 shadow-sm"
             />
             <span className="absolute right-3 top-3 text-gray-400">🔍</span>
           </div>
 
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="bg-green-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-green-700 transition shadow-lg whitespace-nowrap"
           >
@@ -259,7 +259,7 @@ const AccommodationTypeAdmin = () => {
           <tbody className="divide-y divide-gray-100">
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map(row => (
-                <tr key={row.id} className="hover:bg-indigo-50/30 transition-colors">
+                <tr key={row.id} className="hover:bg-yellow-50/30 transition-colors">
                   {row.getVisibleCells().map(cell => (
                     <td key={cell.id} className="p-4 text-gray-700 text-sm">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -279,16 +279,16 @@ const AccommodationTypeAdmin = () => {
       </div>
 
       {showAddModal && (
-        <AddAccModal 
-          onClose={() => setShowAddModal(false)} 
+        <AddAccModal
+          onClose={() => setShowAddModal(false)}
           onSuccess={() => { setShowAddModal(false); fetchData(); }}
         />
       )}
 
       {editingAcc && (
-        <EditAccModal 
-          acc={editingAcc} 
-          onClose={() => setEditingAcc(null)} 
+        <EditAccModal
+          acc={editingAcc}
+          onClose={() => setEditingAcc(null)}
           onSuccess={() => { setEditingAcc(null); fetchData(); }}
         />
       )}

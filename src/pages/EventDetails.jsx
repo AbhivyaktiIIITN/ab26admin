@@ -6,7 +6,7 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- SUB-COMPONENT: ADD ROUND 2 MODAL ---
 const AddRound2Modal = ({ eventId, onClose, onSuccess }) => {
@@ -258,7 +258,7 @@ const EventDetails = () => {
                     >
                         {row.team ? (
                             <div>
-                                <div className="font-bold text-indigo-600 group-hover:text-indigo-800 underline decoration-dotted">Team: {row.team.name} ({row.team.teamcode})</div>
+                                <div className="font-bold text-yellow-600 group-hover:text-yellow-800 underline decoration-dotted">Team: {row.team.name} ({row.team.teamcode})</div>
                                 <div className="text-xs text-gray-500">Leader: {row.team.leader.name}</div>
                             </div>
                         ) : (
@@ -389,7 +389,7 @@ const EventDetails = () => {
                     >
                         {row.team ? (
                             <div>
-                                <div className="font-bold text-indigo-600 group-hover:text-indigo-800 underline decoration-dotted">Team: {row.team.name}</div>
+                                <div className="font-bold text-yellow-600 group-hover:text-yellow-800 underline decoration-dotted">Team: {row.team.name}</div>
                                 <div className="text-xs text-gray-500">Leader: {row.team.leader?.name}</div>
                             </div>
                         ) : (

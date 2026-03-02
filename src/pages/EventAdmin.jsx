@@ -6,11 +6,11 @@ import {
     flexRender
 } from '@tanstack/react-table';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api';
+import api from '../api/api';
 // Note: I couldn't find api.js earlier with find_by_name. But PassTypeAdmin imports it from '../../api/api'.
 // So it must be in src/api/api.js. Wait, list_dir said src/api does not exist.
 // Let me double check PassTypeAdmin import again.
-// It says `import api from '../../api/api';` inside `src/pages/PassTypeAdmin.jsx`.
+// It says `import api from '../api/api';` inside `src/pages/PassTypeAdmin.jsx`.
 // So `../api/api` relative to `src/pages` is `src/api/api`.
 // Maybe I missed the `api` directory in `list_dir` output of `src`?
 // Let me assume it exists for now based on existing code. If it fails, I'll fix it.
@@ -191,7 +191,7 @@ const EventAdmin = () => {
                     </button>
                     <button
                         onClick={() => setEditingEvent(info.row.original)}
-                        className="bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 transition shadow-sm text-sm"
+                        className="bg-yellow-600 text-white px-3 py-1.5 rounded hover:bg-yellow-700 transition shadow-sm text-sm"
                     >
                         Edit
                     </button>

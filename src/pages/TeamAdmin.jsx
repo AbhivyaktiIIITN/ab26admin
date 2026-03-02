@@ -5,7 +5,7 @@ import {
     getFilteredRowModel,
     flexRender
 } from '@tanstack/react-table';
-import api from '../../api/api';
+import api from '../api/api';
 
 // --- SUB-COMPONENT: CREATE/EDIT TEAM MODAL ---
 const TeamModal = ({ team, onClose, onSuccess }) => {
@@ -372,7 +372,7 @@ const TeamAdmin = () => {
                     </button>
                     <button
                         onClick={() => setEditingTeam(info.row.original)}
-                        className="bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 text-xs shadow-sm"
+                        className="bg-yellow-600 text-white px-3 py-1.5 rounded hover:bg-yellow-700 text-xs shadow-sm"
                     >
                         Edit
                     </button>
