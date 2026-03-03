@@ -6,6 +6,7 @@ import {
   flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- SUB-COMPONENT: ADD PASS MODAL ---
 const AddPassModal = ({ onClose, onSuccess }) => {
@@ -173,6 +174,15 @@ const PassTypeAdmin = () => {
     fetchPasses();
   }, []);
 
+  const csvColumns = [
+    { header: 'ID', accessorKey: 'id' },
+    { header: 'Pass Name', accessorKey: 'name' },
+    { header: 'Price (₹)', accessorKey: 'price' },
+    { header: 'Total Inventory', accessorKey: 'count' },
+    { header: 'Sold', accessorKey: 'countPurchased' },
+    { header: 'Available', accessorFn: row => row.count - (row.countPurchased || 0) }
+  ];
+
   const columns = [
     { header: 'ID', accessorKey: 'id' },
     { header: 'Pass Name', accessorKey: 'name' },
@@ -235,6 +245,12 @@ const PassTypeAdmin = () => {
             />
             <span className="absolute right-3 top-3 text-gray-400 pointer-events-none">🔍</span>
           </div>
+
+          <ExportCsvButton
+            rows={table.getFilteredRowModel().rows.map(r => r.original)}
+            columns={csvColumns}
+            filename="pass-types.csv"
+          />
 
           <button
             onClick={() => setShowAddModal(true)}

@@ -6,6 +6,7 @@ import {
     flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- SUB-COMPONENT: CREATE/EDIT TEAM MODAL ---
 const TeamModal = ({ team, onClose, onSuccess }) => {
@@ -326,6 +327,40 @@ const TeamAdmin = () => {
         }
     };
 
+    const csvColumns = [
+        {
+            header: 'Team Name',
+            accessorKey: 'name'
+        },
+        {
+            header: 'Team Code',
+            accessorKey: 'teamcode'
+        },
+        {
+            header: 'Event',
+            accessorFn: row => row.event?.name
+        },
+        {
+            header: 'Leader',
+            accessorFn: row => row.leader?.name
+        },
+        {
+            header: 'Leader Email',
+            accessorFn: row => row.leader?.email
+        },
+        {
+            header: 'Members',
+            accessorFn: row => {
+                const memberNames = row.members?.map(m => m.user?.name).filter(Boolean).join('; ') || 'None';
+                return memberNames;
+            }
+        },
+        {
+            header: 'Member Count',
+            accessorFn: row => row._count?.members || 0
+        }
+    ];
+
     const columns = [
         {
             header: 'Team Details',
@@ -411,6 +446,11 @@ const TeamAdmin = () => {
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search teams, leaders..."
                         className="px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <ExportCsvButton
+                        rows={table.getFilteredRowModel().rows.map(r => r.original)}
+                        columns={csvColumns}
+                        filename="teams.csv"
                     />
                     <button
                         onClick={() => setShowCreateModal(true)}

@@ -6,6 +6,7 @@ import {
     flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- SUB-COMPONENT: USER DETAILS MODAL ---
 const UserDetailsModal = ({ user, onClose }) => {
@@ -156,6 +157,49 @@ const UserAdmin = () => {
         fetchUsers();
     }, []);
 
+    const csvColumns = [
+        {
+            header: 'ABID',
+            accessorFn: row => `AB${String(row.serialId).padStart(5, '0')}`
+        },
+        {
+            header: 'User ID',
+            accessorKey: 'id'
+        },
+        {
+            header: 'Name',
+            accessorKey: 'name'
+        },
+        {
+            header: 'Email',
+            accessorKey: 'email'
+        },
+        {
+            header: 'College',
+            accessorKey: 'collegeName'
+        },
+        {
+            header: 'Phone',
+            accessorKey: 'phoneNumber'
+        },
+        {
+            header: 'Pass Status',
+            accessorFn: row => row.purchasedPasses?.length > 0 ? `${row.purchasedPasses.length} Pass(es)` : 'No Pass'
+        },
+        {
+            header: 'Pass Sold IDs',
+            accessorFn: row => row.purchasedPasses?.map(p => p.id).join('; ') || '-'
+        },
+        {
+            header: 'Accommodation Count',
+            accessorFn: row => row.accomodationBookings?.length || 0
+        },
+        {
+            header: 'Accommodation Booking IDs',
+            accessorFn: row => row.accomodationBookings?.map(a => a.id).join('; ') || '-'
+        }
+    ];
+
     const columns = [
         {
             header: 'ABID',
@@ -239,12 +283,17 @@ const UserAdmin = () => {
                     <h2 className="text-3xl font-extrabold text-gray-900">User Management</h2>
                     <p className="text-gray-500">View and manage all registered users.</p>
                 </div>
-                <div className="w-full md:w-auto">
+                <div className="w-full md:w-auto flex items-center gap-2">
                     <input
                         value={globalFilter ?? ''}
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search users..."
                         className="w-full md:w-64 px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <ExportCsvButton
+                        rows={table.getFilteredRowModel().rows.map(r => r.original)}
+                        columns={csvColumns}
+                        filename="users.csv"
                     />
                 </div>
             </div>

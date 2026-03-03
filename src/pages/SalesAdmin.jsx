@@ -6,9 +6,10 @@ import {
     flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- GENERIC READ-ONLY TABLE ---
-const ReadOnlyTable = ({ data, columns, loading, emptyMessage }) => {
+const ReadOnlyTable = ({ data, columns, loading, emptyMessage, filename = 'data.csv' }) => {
     const [globalFilter, setGlobalFilter] = useState('');
 
     const table = useReactTable({
@@ -24,12 +25,17 @@ const ReadOnlyTable = ({ data, columns, loading, emptyMessage }) => {
 
     return (
         <div className="space-y-4">
-            <div className="flex justify-end">
+            <div className="flex justify-end items-center gap-2">
                 <input
                     value={globalFilter ?? ''}
                     onChange={e => setGlobalFilter(e.target.value)}
                     placeholder="Search..."
                     className="px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+                />
+                <ExportCsvButton
+                    rows={table.getFilteredRowModel().rows.map(r => r.original)}
+                    columns={columns}
+                    filename={filename}
                 />
             </div>
             <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
@@ -92,6 +98,34 @@ const SalesAdmin = () => {
     }, [activeTab]);
 
     // --- COLUMNS DEFINITIONS ---
+    const passCsvColumns = [
+        { header: 'User Name', accessorFn: row => row.user?.name },
+        { header: 'User Email', accessorFn: row => row.user?.email },
+        { header: 'Pass Name', accessorFn: row => row.passType?.name },
+        { header: 'Price (₹)', accessorFn: row => row.passType?.price },
+        { header: 'Transaction ID', accessorFn: row => row.transaction?.razorpay_payment_id || 'N/A' },
+        { header: 'Date', accessorFn: row => new Date(row.created_at).toLocaleString() }
+    ];
+
+    const accomCsvColumns = [
+        { header: 'User Name', accessorFn: row => row.user?.name },
+        { header: 'User Email', accessorFn: row => row.user?.email },
+        { header: 'Accommodation Type', accessorFn: row => row.accommodationType?.name },
+        { header: 'Price (₹)', accessorFn: row => row.accommodationType?.price },
+        { header: 'Transaction ID', accessorFn: row => row.transaction?.razorpay_payment_id || 'N/A' },
+        { header: 'Date', accessorFn: row => new Date(row.created_at).toLocaleString() }
+    ];
+
+    const transCsvColumns = [
+        { header: 'Razorpay Payment ID', accessorKey: 'razorpay_payment_id' },
+        { header: 'Razorpay Order ID', accessorFn: row => row.order?.razorpayOrderId },
+        { header: 'User Name', accessorFn: row => row.order?.user?.name || 'Unknown' },
+        { header: 'User Email', accessorFn: row => row.order?.user?.email },
+        { header: 'Amount (₹)', accessorFn: row => (row.amount / 100).toFixed(2) },
+        { header: 'Status', accessorKey: 'status' },
+        { header: 'Date', accessorFn: row => new Date(row.created_at).toLocaleString() }
+    ];
+
     const passColumns = [
         {
             header: 'User',
@@ -269,27 +303,30 @@ const SalesAdmin = () => {
             {activeTab === 'passes' && (
                 <ReadOnlyTable
                     data={data.passes}
-                    columns={passColumns}
+                    columns={passCsvColumns}
                     loading={loading}
                     emptyMessage="No passes sold yet."
+                    filename="sales-passes.csv"
                 />
             )}
 
             {activeTab === 'accommodation' && (
                 <ReadOnlyTable
                     data={data.accommodation}
-                    columns={accomColumns}
+                    columns={accomCsvColumns}
                     loading={loading}
                     emptyMessage="No accommodation booked yet."
+                    filename="sales-accommodation.csv"
                 />
             )}
 
             {activeTab === 'transactions' && (
                 <ReadOnlyTable
                     data={data.transactions}
-                    columns={transColumnsRefined}
+                    columns={transCsvColumns}
                     loading={loading}
                     emptyMessage="No transactions recorded."
+                    filename="sales-transactions.csv"
                 />
             )}
         </div>

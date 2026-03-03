@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-table';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 import { Link } from 'react-router-dom';
 // Note: I couldn't find api.js earlier with find_by_name. But PassTypeAdmin imports it from '../../api/api'.
 // So it must be in src/api/api.js. Wait, list_dir said src/api does not exist.
@@ -157,6 +158,18 @@ const EventAdmin = () => {
         }
     };
 
+    const csvColumns = [
+        { header: 'Event ID', accessorKey: 'id' },
+        { header: 'Name', accessorKey: 'name' },
+        { header: 'Club/Category', accessorKey: 'club' },
+        { header: 'Type', accessorFn: row => row.isTeamEvent ? 'Team Event' : 'Individual Event' },
+        { header: 'Is Team Event', accessorFn: row => row.isTeamEvent ? 'Yes' : 'No' },
+        { header: 'Min Team Size', accessorKey: 'minTeamSize' },
+        { header: 'Max Team Size', accessorKey: 'maxTeamSize' },
+        { header: 'Registrations', accessorFn: row => row._count?.registrations || 0 },
+        { header: 'Round 2 Selected', accessorFn: row => row._count?.round2selected || 0 }
+    ];
+
     const columns = [
         { header: 'Name', accessorKey: 'name' },
         { header: 'Club', accessorKey: 'club' },
@@ -233,6 +246,11 @@ const EventAdmin = () => {
                         onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Search events..."
                         className="px-4 py-2 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <ExportCsvButton
+                        rows={table.getFilteredRowModel().rows.map(r => r.original)}
+                        columns={csvColumns}
+                        filename="events.csv"
                     />
                     <button
                         onClick={() => setShowAddModal(true)}

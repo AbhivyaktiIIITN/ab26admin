@@ -6,6 +6,7 @@ import {
   flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- SUB-COMPONENT: ADD ACCOMMODATION MODAL ---
 const AddAccModal = ({ onClose, onSuccess }) => {
@@ -163,6 +164,15 @@ const AccommodationTypeAdmin = () => {
     fetchData();
   }, []);
 
+  const csvColumns = [
+    { header: 'ID', accessorKey: 'id' },
+    { header: 'Type Name', accessorKey: 'name' },
+    { header: 'Price (₹)', accessorKey: 'price' },
+    { header: 'Total Capacity', accessorKey: 'count' },
+    { header: 'Booked', accessorKey: 'countBooked' },
+    { header: 'Available', accessorFn: row => (row.count || 0) - (row.countBooked || 0) }
+  ];
+
   const columns = [
     { header: 'ID', accessorKey: 'id' },
     { header: 'Type Name', accessorKey: 'name' },
@@ -233,6 +243,12 @@ const AccommodationTypeAdmin = () => {
             />
             <span className="absolute right-3 top-3 text-gray-400">🔍</span>
           </div>
+
+          <ExportCsvButton
+            rows={table.getFilteredRowModel().rows.map(r => r.original)}
+            columns={csvColumns}
+            filename="accommodation-types.csv"
+          />
 
           <button
             onClick={() => setShowAddModal(true)}

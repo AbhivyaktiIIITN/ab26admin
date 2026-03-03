@@ -7,6 +7,7 @@ import {
     flexRender
 } from '@tanstack/react-table';
 import api from '../api/api';
+import ExportCsvButton from '../components/ExportCsvButton';
 
 // --- SUB-COMPONENT: ADD ROUND 2 MODAL ---
 const AddRound2Modal = ({ eventId, onClose, onSuccess }) => {
@@ -239,6 +240,77 @@ const EventDetails = () => {
         }
     };
 
+    // --- CSV Export Columns ---
+    const regCsvColumns = [
+        {
+            header: 'Event Name',
+            accessorFn: () => data.event?.name
+        },
+        {
+            header: 'Participant Type',
+            accessorFn: row => row.team ? 'Team' : 'Individual'
+        },
+        {
+            header: 'Participant Name',
+            accessorFn: row => row.team ? row.team.name : row.user?.name
+        },
+        {
+            header: 'Team Code',
+            accessorFn: row => row.team?.teamcode || '-'
+        },
+        {
+            header: 'Leader/User Name',
+            accessorFn: row => row.team ? row.team.leader?.name : row.user?.name
+        },
+        {
+            header: 'Leader/User Email',
+            accessorFn: row => row.team ? row.team.leader?.email : row.user?.email
+        },
+        {
+            header: 'Has Pass',
+            accessorFn: row => {
+                if (row.team) {
+                    return row.team.leader?.purchasedPasses?.length > 0 ? 'Yes' : 'No';
+                }
+                return row.user?.purchasedPasses?.length > 0 ? 'Yes' : 'No';
+            }
+        },
+        {
+            header: 'In Round 2',
+            accessorFn: row => {
+                const isInRound2 = data.round2?.some(r2 => r2.registrationId === row.id);
+                return isInRound2 ? 'Yes' : 'No';
+            }
+        }
+    ];
+
+    const round2CsvColumns = [
+        {
+            header: 'Event Name',
+            accessorFn: () => data.event?.name
+        },
+        {
+            header: 'Participant Type',
+            accessorFn: row => row.team ? 'Team' : 'Individual'
+        },
+        {
+            header: 'Participant Name',
+            accessorFn: row => row.team ? row.team.name : row.user?.name
+        },
+        {
+            header: 'Team Code',
+            accessorFn: row => row.team?.teamcode || '-'
+        },
+        {
+            header: 'Leader/User Name',
+            accessorFn: row => row.team ? row.team.leader?.name : row.user?.name
+        },
+        {
+            header: 'Leader/User Email',
+            accessorFn: row => row.team ? row.team.leader?.email : row.user?.email
+        }
+    ];
+
     // --- Registrations Table Columns ---
     const regColumns = [
         {
@@ -455,12 +527,19 @@ const EventDetails = () => {
                 <div className="bg-white border rounded-2xl shadow-sm flex flex-col h-[600px]">
                     <div className="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
                         <h3 className="font-bold text-lg text-gray-800">Registrations ({data.registrations.length})</h3>
-                        <input
-                            placeholder="Search..."
-                            className="px-3 py-1 text-sm border rounded hover:border-blue-400 outline-none"
-                            value={regFilter ?? ''}
-                            onChange={e => setRegFilter(e.target.value)}
-                        />
+                        <div className="flex items-center gap-2">
+                            <input
+                                placeholder="Search..."
+                                className="px-3 py-1 text-sm border rounded hover:border-blue-400 outline-none"
+                                value={regFilter ?? ''}
+                                onChange={e => setRegFilter(e.target.value)}
+                            />
+                            <ExportCsvButton
+                                rows={regTable.getFilteredRowModel().rows.map(r => r.original)}
+                                columns={regCsvColumns}
+                                filename={`${data.event?.name?.toLowerCase().replace(/\s+/g, '-')}-registrations.csv` || 'event-registrations.csv'}
+                            />
+                        </div>
                     </div>
                     <div className="overflow-auto flex-1 p-0">
                         <table className="w-full text-left">
@@ -503,6 +582,11 @@ const EventDetails = () => {
                                 className="px-3 py-1 text-sm border rounded hover:border-purple-400 outline-none w-32"
                                 value={round2Filter ?? ''}
                                 onChange={e => setRound2Filter(e.target.value)}
+                            />
+                            <ExportCsvButton
+                                rows={round2Table.getFilteredRowModel().rows.map(r => r.original)}
+                                columns={round2CsvColumns}
+                                filename={`${data.event?.name?.toLowerCase().replace(/\s+/g, '-')}-round2.csv` || 'event-round2.csv'}
                             />
                             <button
                                 onClick={() => setShowRound2Modal(true)}

@@ -9,6 +9,7 @@ import SalesAdmin from './pages/SalesAdmin';
 import UserLookup from './pages/UserLookup';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScanPass from './pages/ScanPass.jsx';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Navbar = () => {
           <Link to="/admin/sales" className="hover:text-yellow-600 transition">Sales</Link>
           <Link to="/admin/passes" className="hover:text-yellow-600 transition">Passes</Link>
           <Link to="/admin/accommodation" className="hover:text-yellow-600 transition">Accommodation</Link>
+          <Link to="/admin/scan-pass" className="hover:text-yellow-600 transition">Scan Pass</Link>
         </div>
         <button
           onClick={handleLogout}
@@ -81,6 +83,9 @@ const App = () => {
             <Route path="/admin/sales" element={<SalesAdmin />} />
             <Route path="/admin/passes" element={<PassTypeAdmin />} />
             <Route path="/admin/accommodation" element={<AccommodationTypeAdmin />} />
+
+            <Route path="/admin/scan-pass" element={<ScanPass />} />
+
           </Route>
 
           {/* Fallback */}
