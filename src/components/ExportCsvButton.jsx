@@ -7,7 +7,7 @@ import React from 'react';
  * resulting file is generated entirely on the client side and triggers
  * a download when clicked.
  */
-const ExportCsvButton = ({ rows = [], columns, filename = 'data.csv' }) => {
+const ExportCsvButton = ({ rows = [], columns, filename = 'data.csv', className }) => {
     const handleClick = () => {
         if (!rows || rows.length === 0) {
             // nothing to export
@@ -39,7 +39,7 @@ const ExportCsvButton = ({ rows = [], columns, filename = 'data.csv' }) => {
 
         const escapeCell = (val) => {
             let str = '';
-            
+
             if (val == null) {
                 str = '';
             } else if (typeof val === 'object') {
@@ -58,7 +58,7 @@ const ExportCsvButton = ({ rows = [], columns, filename = 'data.csv' }) => {
             } else {
                 str = String(val);
             }
-            
+
             return `"${str.replace(/"/g, '""')}"`;
         };
 
@@ -78,7 +78,7 @@ const ExportCsvButton = ({ rows = [], columns, filename = 'data.csv' }) => {
     return (
         <button
             onClick={handleClick}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-sm text-sm"
+            className={className || "bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition shadow-sm text-sm"}
         >
             Download CSV
         </button>
