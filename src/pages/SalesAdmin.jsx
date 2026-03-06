@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
     useReactTable,
     getCoreRowModel,
@@ -289,9 +290,17 @@ const SalesAdmin = () => {
 
     return (
         <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-in fade-in duration-500">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tighter uppercase">Sales & Transactions</h2>
-                <p className="text-gray-500 font-medium text-sm">Read-only view of all financial activities.</p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="flex flex-col gap-2">
+                    <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tighter uppercase">Sales & Transactions</h2>
+                    <p className="text-gray-500 font-medium text-sm">Read-only view of all financial activities.</p>
+                </div>
+                <Link
+                    to="/admin/omega-manual-entry-x99"
+                    className="px-4 py-2 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-indigo-100 transition-all flex items-center gap-2"
+                >
+                    <span className="text-lg">+</span> Manual Entry
+                </Link>
             </div>
 
             <div className="flex border-b border-gray-100 overflow-x-auto no-scrollbar scroll-smooth">

@@ -14,6 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ScanPass from './pages/ScanPass.jsx';
 import AdminLogs from './pages/AdminLogs';
 import HiddenPortal from './pages/HiddenPortal';
+import ManualEntry from './pages/ManualEntry';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -144,6 +145,7 @@ const App = () => {
             <Route path="/admin/quantum-passes-99" element={<PassTypeAdmin />} />
             <Route path="/admin/nebula-stay-x" element={<AccommodationTypeAdmin />} />
             <Route path="/admin/portal-security-logs" element={<AdminLogs />} />
+            <Route path="/admin/omega-manual-entry-x99" element={<ManualEntry />} />
 
             {/* The Master Secret Portal */}
             <Route path="/admin/shadow-fight-77" element={<HiddenPortal />} />

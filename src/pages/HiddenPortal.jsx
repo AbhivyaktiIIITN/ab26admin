@@ -18,6 +18,7 @@ const HiddenPortal = () => {
                 { to: "/admin/xyz-sales-secret", label: "Sales Dashboard", desc: "Financial tracking and stats" },
                 { to: "/admin/quantum-passes-99", label: "Pass Types", desc: "Configure event pass pricing" },
                 { to: "/admin/nebula-stay-x", label: "Accommodation", desc: "Manage stay types and allocations" },
+                { to: "/admin/omega-manual-entry-x99", label: "Manual Entry", desc: "Bypass gateway for offline payments" },
             ]
         },
         {
