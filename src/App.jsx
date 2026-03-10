@@ -146,7 +146,7 @@ const App = () => {
             <Route path="/admin/quantum-passes-69" element={<PassTypeAdmin />} />
             <Route path="/admin/nebula-stay-69" element={<AccommodationTypeAdmin />} />
             <Route path="/admin/portal-security-log-69" element={<AdminLogs />} />
-            <Route path="/admin/omega-manual-entry-69" element={<ManualEntry />} />
+            <Route path="/admin/omega-manual-entry-x99" element={<ManualEntry />} />
 
             {/* The Master Secret Portal */}
             <Route path="/admin/shadow-fight-69" element={<HiddenPortal />} />
