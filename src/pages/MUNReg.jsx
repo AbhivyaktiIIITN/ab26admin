@@ -316,7 +316,7 @@ const MUNReg = () => {
                 
                 const getLatestPassTime = (u) => {
                     if (!u || !u.purchasedPasses || u.purchasedPasses.length === 0) return 0;
-                    return Math.max(...u.purchasedPasses.map(p => new Date(p.createdAt || 0).getTime()));
+                    return Math.max(...u.purchasedPasses.map(p => new Date(p.created_at || p.createdAt || 0).getTime()));
                 };
                 
                 return getLatestPassTime(userB) - getLatestPassTime(userA);
@@ -560,6 +560,21 @@ const MUNReg = () => {
             accessorKey: 'coDelegate2AbId',
             cell: info => renderCoDelegateCell(info.getValue())
         },
+        ...(sortRecentPass ? [{
+            header: 'Pass Date',
+            accessorFn: row => {
+                const user = getUserInfoByAbId(row.d1AbId) || row.user;
+                if (!user || !user.purchasedPasses || user.purchasedPasses.length === 0) return 'N/A';
+                const latestTime = Math.max(...user.purchasedPasses.map(p => new Date(p.created_at || p.createdAt || 0).getTime()));
+                return latestTime;
+            },
+            cell: info => info.getValue() !== 'N/A' ? (
+                <div className="flex flex-col gap-0.5 min-w-[100px]">
+                    <span className="text-xs font-bold text-emerald-700">{new Date(info.getValue()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                    <span className="text-[10px] font-mono text-gray-500 uppercase">{new Date(info.getValue()).toLocaleTimeString('en-US', { hour: '2-digit', minute:'2-digit' })}</span>
+                </div>
+            ) : <span className="text-gray-300 text-xs italic">N/A</span>
+        }] : []),
         {
             header: 'Actions',
             cell: info => (
